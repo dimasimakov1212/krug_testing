@@ -43,30 +43,76 @@ def reformat_date_new(date_data):
     return new_date_data
 
 
-def preparing_data(list_data):
+def checkin_data(list_data, time_start, time_finish, difference):
     """
-    Подготавливает данные для обработки
+    Проверка разницы данных между собой
+    :param list_data: список данных для проверки
+    :param time_start: начало временного интервала
+    :param time_finish: окончание временного интервала
+    :param difference: разница данных
+    :return: список, подходящий по заданным параметрам
     """
-    title_list = list_data[0]
 
     # формируем новый список
-    new_list = []
+    new_list = [list_data[0]]  # добавляем заголовок
 
-    # меняем дату на объект datetime и складываем в новый список
+    data_number = len(list_data[0])  # количество элементов в одном списке
+
+    # перебираем списки с данными
     for number in range(1, len(list_data)):
 
-        single_list = list_data[number]  # получаем элемент списка (список)
-        date_data = single_list[1]  # получаем дату
-        new_date_data = reformat_date_new(date_data)  # преобразуем дату
-        single_list[1] = new_date_data  # заменяем дату
-        new_list.append(single_list)  # добавляем в новый список
+        if number == 1:
+            datas_1 = list_data[len(list_data) - 1]  # получаем первый список данных для сравнения
+            datas_2 = list_data[number]  # получаем второй список данных для сравнения
+        else:
+            datas_1 = list_data[number - 1]  # получаем первый список данных для сравнения
+            datas_2 = list_data[number]  # получаем второй список данных для сравнения
 
-    # сортируем срисок, чтобы операции шли по порядку
-    sorted_list = sorted(new_list, key=lambda x: x[1])
+        date_1 = reformat_date_new(datas_1[1])  # получаем дату первого списка данных
+        date_2 = reformat_date_new(datas_2[1])  # получаем дату второго списка данных
 
-    return sorted_list
+        # проверяем условие, что даты списков данных идут друг за другом
+        if date_2 > date_1:
+
+            # проверяем попадает ли дата в заданный диапазон
+            if time_start <= date_2 <= time_finish:
+
+                # проверяем данные в первом и втором списке
+                for item in range(2, data_number):
+
+                    figure_1 = float(datas_1[item].replace(',', '.'))  # приводим к типу параметр 1
+                    figure_2 = float(datas_2[item].replace(',', '.'))  # приводим к типу параметр 2
+
+                    # если разница в данных превышает заданный параметр
+                    if abs(figure_2 - figure_1) > difference:
+
+                        new_list.append(datas_2)  # добавляем данные в новый список
+
+                        break
+
+    # сортируем список, чтобы операции шли по порядку
+    # sorted_list = sorted(new_list, key=lambda x: x[1])
+
+    return new_list
 
 
 if __name__ == '__main__':
     list_1 = reading_csv(file_start_csv)
-    preparing_data(list_1)
+    print(len(list_1))
+    print(list_1[0])
+    print(list_1[1])
+
+    t_start = datetime.datetime(2022, 8, 18, 7, 58, 25, 12000)
+    t_finish = datetime.datetime(2022, 8, 18, 7, 58, 29, 2000)
+    list_2 = checkin_data(list_1, t_start, t_finish, 2)
+    # for i in list_2:
+    #     print(i[1])
+    print(len(list_2))
+    print(list_2[0])
+    print(list_2[2])
+
+    # for i in range(2, len(list_2[2])):
+    #     a = float(list_2[2][i].replace(',', '.')) - float(list_1[1][i].replace(',', '.'))
+    #     # print(a)
+    #     if abs(a) > 2:
+    #         print(a)
