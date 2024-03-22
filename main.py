@@ -16,9 +16,9 @@ file_finish_csv = os.path.abspath(f'./786442_Ribbon2.csv')
 
 
 def reading_csv(data_file):
-    """ Чтение файла с данными """
+    """ Чтение файла с данными в формате csv"""
 
-    # исходный список
+    # формируем исходный список
     list_start = []
 
     with open(data_file, 'r', encoding='windows-1251') as file:
@@ -30,28 +30,43 @@ def reading_csv(data_file):
 
 
 def reformat_date_new(date_data):
+    """
+    Преобразует входящую дату в объект datetime
+    """
+
+    # убираем лишние символы
     date_data = date_data.replace(' г.', '').replace(' мсек', '')
 
+    # преобразуем дату
     new_date_data = datetime.datetime.strptime(date_data, '%d %B %Y %H:%M:%S.%f')
+
     return new_date_data
 
 
-def new_data(list_data):
+def preparing_data(list_data):
+    """
+    Подготавливает данные для обработки
+    """
     title_list = list_data[0]
-    print(title_list)
+
+    # формируем новый список
     new_list = []
-    print(len(list_data))
 
+    # меняем дату на объект datetime и складываем в новый список
     for number in range(1, len(list_data)):
-        single_list = list_data[number]
-        date_data = single_list[1]
-        new_date_data = reformat_date_new(date_data)
-        single_list[1] = new_date_data
-        new_list.append(single_list)
 
-    print(new_list)
+        single_list = list_data[number]  # получаем элемент списка (список)
+        date_data = single_list[1]  # получаем дату
+        new_date_data = reformat_date_new(date_data)  # преобразуем дату
+        single_list[1] = new_date_data  # заменяем дату
+        new_list.append(single_list)  # добавляем в новый список
+
+    # сортируем срисок, чтобы операции шли по порядку
+    sorted_list = sorted(new_list, key=lambda x: x[1])
+
+    return sorted_list
 
 
 if __name__ == '__main__':
     list_1 = reading_csv(file_start_csv)
-    new_data(list_1)
+    preparing_data(list_1)
