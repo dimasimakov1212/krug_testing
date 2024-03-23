@@ -7,13 +7,6 @@ import locale
 # Устанавливаем русскую локаль
 locale.setlocale(locale.LC_ALL, 'ru_RU.utf8')
 
-# путь к файлу с исходными данными
-# file_start_csv = os.path.abspath(f'./786442_Ribbon1.csv')
-file_start_csv = os.path.abspath(f'./786442_Ribbon1_test.csv')
-
-# путь к файлу с исходными данными
-file_finish_csv = os.path.abspath(f'./786442_Ribbon2.csv')
-
 
 def reading_csv(data_file):
     """ Чтение файла с данными в формате csv"""
@@ -104,27 +97,37 @@ def checkin_data(list_data: list, time_start, time_finish, difference):
 def start_researching():
     """ Функция запуска расчета """
 
-    # задаем параметры поиска
+    # ----- задаем файлы для данных -----
+
+    # путь к файлу с исходными данными
+    file_start_csv = os.path.abspath(f'./786442_Ribbon1.csv')
+
+    # путь к файлу с исходными данными
+    file_finish_csv = os.path.abspath(f'./786442_Ribbon2.csv')
+
+    # ----- задаем параметры поиска -----
 
     # время начала интервала поиска
-    time_start = datetime.datetime(2022, 8, 18, 7, 58, 25, 12000)
+    time_start = datetime.datetime(2022, 8, 18, 7, 58, 1, 12000)
 
     # время окончания интервала поиска
-    time_finish = datetime.datetime(2022, 8, 18, 7, 58, 29, 2000)
+    time_finish = datetime.datetime(2022, 8, 18, 10, 57, 39, 2000)
 
     # разница данных, при которых будет выполняться условие добавления в конечный результат
-    difference = 50
+    difference = 100
 
-    # запуск проверки
+    # ----- запуск проверки -----
 
     # получаем время начала проверки
     time_launch = datetime.datetime.now()
 
     # считываем данные из файла csv
     list_in = reading_csv(file_start_csv)
+    print(f'Количество строк начальных данных - {len(list_in) - 1}')
 
     # запускаем проверку параметров
     list_out = checkin_data(list_in, time_start, time_finish, difference)
+    print(f'Количество строк конечных данных - {len(list_out) - 1}')
 
     # получаем время окончания проверки
     time_end = datetime.datetime.now()
@@ -134,29 +137,9 @@ def start_researching():
 
     # получаем время выполнения проверки
     time_delta = time_end - time_launch
-    print(time_delta)
+    print(f'Время выполнения проверки - {time_delta}')
 
 
 if __name__ == '__main__':
 
     start_researching()
-
-    # list_1 = reading_csv(file_start_csv)
-    # print(len(list_1))
-    # print(list_1[0])
-    # print(list_1[1])
-    #
-    # t_start = datetime.datetime(2022, 8, 18, 7, 58, 25, 12000)
-    # t_finish = datetime.datetime(2022, 8, 18, 7, 58, 29, 2000)
-    # list_2 = checkin_data(list_1, t_start, t_finish, 2)
-    # # for i in list_2:
-    # #     print(i[1])
-    # print(len(list_2))
-    # print(list_2[0])
-    # print(list_2[2])
-
-    # for i in range(2, len(list_2[2])):
-    #     a = float(list_2[2][i].replace(',', '.')) - float(list_1[1][i].replace(',', '.'))
-    #     # print(a)
-    #     if abs(a) > 2:
-    #         print(a)
