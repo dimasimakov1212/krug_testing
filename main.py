@@ -143,3 +143,4 @@ def start_researching():
 if __name__ == '__main__':
 
     start_researching()
+    print('')
